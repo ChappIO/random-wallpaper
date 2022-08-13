@@ -24,8 +24,7 @@
 <script>
     const options = new URL(window.location).searchParams;
     const interval = parseInt(options.get('interval')) || 10;
-    const terms = options.get('terms');
-    let counter = 0;
+    const terms = options.get('terms')?.split(',')?.map(item => item.trim()) || [];
 
     function debounce(doThing) {
         let timeout;
@@ -40,7 +39,8 @@
     function loadNext() {
         const otherImgs = document.querySelectorAll('img');
         const img = document.createElement('img');
-        img.src = `https://source.unsplash.com/random/${window.innerWidth}x${window.innerHeight}/?${encodeURIComponent(terms)}`;
+        const term = terms[Math.floor(Math.random() * terms.length)];
+        img.src = `https://source.unsplash.com/random/${window.innerWidth}x${window.innerHeight}/?${encodeURIComponent(term)}`;
         img.addEventListener('load', () => {
             // fade out all other images
             otherImgs.forEach(other => {
