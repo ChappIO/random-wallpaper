@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Random Wallpaper</title>
+    <style>
+        body {
+            width: 100vw;
+            height: 100vh;
+            margin: 0;
+        }
+
+        img {
+            position: fixed;
+            transition: opacity 2s;
+        }
+
+        img.fade-out {
+            opacity: 0;
+        }
+    </style>
+</head>
+<body>
+<script>
+    const options = new URL(window.location).searchParams;
+    const interval = parseInt(options.get('interval')) || 10;
+    const terms = options.get('terms');
+    let counter = 0;
+
+    function debounce(doThing) {
+        let timeout;
+        return () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                doThing()
+            }, 500);
+        };
+    }
+
+    function loadNext() {
+        const otherImgs = document.querySelectorAll('img');
+        const img = document.createElement('img');
+        img.src = `https://source.unsplash.com/random/${window.innerWidth}x${window.innerHeight}/?${encodeURIComponent(terms)}`;
+        img.addEventListener('load', () => {
+            // fade out all other images
+            otherImgs.forEach(other => {
+                if (img === other) {
+                    return;
+                }
+                other.classList.add('fade-out');
+                setTimeout(() => {
+                    other.remove();
+                }, 4000);
+            });
+        });
+        fetch(img.src).then(() => {
+            document.body.prepend(img);
+        });
+    }
+
+    loadNext();
+    setInterval(loadNext, interval * 60 * 1000);
+    window.addEventListener('resize', debounce(loadNext));
+</script>
+</body>
+</html>
