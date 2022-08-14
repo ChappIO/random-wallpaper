@@ -41,7 +41,7 @@
         const img = document.createElement('img');
         const term = terms[Math.floor(Math.random() * terms.length)];
         img.src = `https://source.unsplash.com/random/${window.innerWidth}x${window.innerHeight}/?${encodeURIComponent(term)}`;
-        img.addEventListener('load', () => {
+        img.decode().then(() => {
             // fade out all other images
             otherImgs.forEach(other => {
                 if (img === other) {
